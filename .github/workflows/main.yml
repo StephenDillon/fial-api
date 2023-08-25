@@ -19,25 +19,22 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-
+  
       - id: 'auth'
+        name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
+          token_format: 'access_token'
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
           project_id: '${{ secrets.GCP_PROJECT_ID }}'
   
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+      # This example uses the docker login action
+      - uses: 'docker/login-action@v1'
+        with:
+          registry: 'us-central1-docker.pkg.dev'
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
   
-      - name: 'Use gcloud CLI'
-        run: 'gcloud info'
-
-      - name: Install docker credentials component
-        run: gcloud components install docker-credential-gcr
-
-      - name: Configure Docker for GCP Artifact Registry
-        run: docker-credential-gcr configure-docker
-
       - name: Build Docker image
         run: docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}/fail-api:latest .
 
