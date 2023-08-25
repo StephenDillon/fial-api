@@ -32,8 +32,11 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
+      - name: Install docker credentials component
+        run: gcloud components install docker-credential-gcr
+
       - name: Configure Docker for GCP Artifact Registry
-        run: gcloud auth configure-docker -q
+        run: docker-credential-gcr configure-docker
 
       - name: Build Docker image
         run: docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}/fail-api:latest .
