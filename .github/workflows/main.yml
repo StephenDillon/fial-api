@@ -3,10 +3,10 @@ name: Build and Push to Artifact Registry
 on:
   push:
     branches:
-      - '*'
+      - 'main'
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,14 +19,6 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
-
-  release:
-    if: github.ref == 'refs/heads/main'
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
