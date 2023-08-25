@@ -39,3 +39,12 @@ jobs:
   
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
+
+      - name: Configure Docker for GCP Artifact Registry
+        run: gcloud beta artifacts docker config use-defaults
+
+      - name: Build Docker image
+        run: docker build -t $GCP_LOCATION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}/fail-api:latest .
+
+      - name: Push Docker image to GCP Artifact Registry
+        run: docker push $GCP_LOCATION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_REPOSITORY }}/fail-api:latest
